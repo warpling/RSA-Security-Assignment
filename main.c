@@ -11,7 +11,7 @@ int main(int argc, char const *argv[])
     // time_t nowTime = time(0);
     // seed = (unsigned long int) rawTime;
     // Initiate random state
-    gmp_randinit_default(seed);
+    gmp_randinit_default(state);
     gmp_randseed_ui(state, seed);
 
     // ~*magic*~
@@ -20,10 +20,17 @@ int main(int argc, char const *argv[])
     mpz_urandomb (randNum, state, 2);
 
     // Loop and print
-    for(i = 0; i < 10; ++i) {
-       mpz_urandomb(randNum, state, 4);
-       gmp_printf("%Zd\n", randNum);
+    int isPrime = 0;
+    for (int i = 0; i < 10; ++i)
+    {
+        while(isPrime < 1) {
+            mpz_urandomb(randNum, state, 512);
+            isPrime = mpz_probab_prime_p(randNum, 25);
+        }
+        gmp_printf("%Zd\n", randNum);
+        isPrime = 0;
     }
+
 
     // Clean up, clean up, everybody do your chore...
     gmp_randclear(state);
