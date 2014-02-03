@@ -1,8 +1,8 @@
 #RSA Jazz
 
 ##Prerequisites
-You must alread have GMP installed to compile.
-The easiest way to install GMP is to use the bundle manager brew and run `brew install gmp`.
+You must alread have [GMP](https://gmplib.org/manual/) installed to compile.
+The easiest way to install GMP is to use the bundle manager [brew](http://brew.sh/) and run `brew install gmp`.
 Make sure it installs without errors and if there are errors make sure you don't ignore them and tear our your hair for an hour.
 
 ##Basic instructions
