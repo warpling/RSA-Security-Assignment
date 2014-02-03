@@ -23,9 +23,6 @@ int main(int argc, char const *argv[])
     {
         for (int j = i; j < NUM_MODULI; ++j)
         {
-            // Don't compare to yourself
-            if(i == j) continue;
-
             mpz_set_ui(gcdResult, 0);
             // mpz_clear(gcdResult); mpz_init(gcdResult);
             mpz_gcd(gcdResult, moduli[i], moduli[j]);
