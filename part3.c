@@ -21,7 +21,7 @@ int main(int argc, char const *argv[])
     mpz_init(gcdResult);
     for (int i = 0; i < NUM_MODULI; ++i)
     {
-        for (int j = 0; j < NUM_MODULI; ++j)
+        for (int j = i; j < NUM_MODULI; ++j)
         {
             // Don't compare to yourself
             if(i == j) continue;
