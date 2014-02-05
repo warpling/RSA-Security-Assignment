@@ -1,5 +1,8 @@
-#include <gmp.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+#include <gmp.h>
+#include <math.h>
 
 typedef struct {
     uint32_t *components;
@@ -7,37 +10,41 @@ typedef struct {
 
 // Inits a 1024 bit int
 void initBigInt(bigInt *num) {
-    num -> components = (char*) malloc(sizeof(uint32_t) * 32);
+    num -> components = (uint32_t*) malloc(sizeof(uint32_t) * 32);
 }
 
 // void freeBigInt(bigInt *num) {
 //     free(num->components);
 // }
 
-// [00000000 00000000 00000000 00000000][00000000 00000000 00000000 00000000][00000000 00000000 00000000 00000000][00000000 00000000 00000000 00000000]
-
-// Set the nth bit in num to bit
-// array 0, index 0 is most significant and array 31, index 31 is the least
-void setBit(bigInt *num, int n, int bit) {
-    num -> components[31 - (n/32)] | (bit << (n % 31));
-}
-
-void setIntWithString(bigInt *bigNum, char *string) {
-    // Take in string and turn it into a 1024 bit int
-    string = "146892254592666948583089601585683631626169645157236206478363921730573253615526209760870859796594181788434695659841710725720439897885763279162093312172796553081184146204117456316407242637075616930126484608395172754491880020673693615434571144613429659762801708555304377699200762859522698292659398396390696049527";
+// Take in string and turn it into a 1024 bit int
+void setBigIntFromString(bigInt *bigNum, char *string) {
     char *binaryString;
-    // Initializes 1024 bit number
+    // Initializes 1024 bit mpz number
     mpz_t num; mpz_init2(num, 1024);
     // Read in base 10 string to mpz representation
     mpz_set_str(num, string, 10);
     // Create output string in base 2
-    mpz_get_str(binaryString, 2, num);
+    // TODO: find out why binaryString isn't getting set through the param
+    binaryString = mpz_get_str(binaryString, 2, num);
+    // Debug:
+    printf("Binary String (%lu char long): %s\n", strlen(binaryString), binaryString);
 
+    // Prepare one of our bigInts
     initBigInt(bigNum);
 
-    // TODO: Eventually do this string -> num conversion on CUDA
-    for (int i = strlen()-1; i >=0 ; ++i)
+    // Build dem' integere components from the binary string
+    // 
+    // bits within component integers are in traditional big endian,
+    //   but the integers components in the components array are in little endian
+    //   (ie. a number like 0xABCDEF would become [0xEF][0xCD][0xAB]) where each bracketed set is a component
+    printf("%d comps\n", (int)ceil(strlen(binaryString)/32.0));
+    for (int i = 0; i < (int)ceil(strlen(binaryString)/32.0); i ++)
     {
-        setBit(bigNum, i, atoi(binaryString[i]));
+        // component has to be shorter than what's being copied in or else strncpy won't null pad it
+        char component[33] = "\0";
+        strncpy(component, &binaryString[i*32], 32);
+        printf("%s", component);
+        bigNum->components[31-i] = atoi(component);
     }
 }
