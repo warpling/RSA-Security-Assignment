@@ -19,32 +19,34 @@ void initBigInt(bigInt *num) {
 
 // Take in string and turn it into a 1024 bit int
 void setBigIntFromString(bigInt *bigNum, char *string) {
-    char *binaryString;
+
     // Initializes 1024 bit mpz number
     mpz_t num; mpz_init2(num, 1024);
     // Read in base 10 string to mpz representation
     mpz_set_str(num, string, 10);
+
     // Create output string in base 2
     // TODO: find out why binaryString isn't getting set through the param
-    binaryString = mpz_get_str(binaryString, 2, num);
+    char binaryString[1025];
+    mpz_get_str(binaryString, 2, num);
     // Debug:
-    printf("Binary String (%lu char long): %s\n", strlen(binaryString), binaryString);
+    // printf("Binary String (%lu char long): %s\n", strlen(binaryString), binaryString);
 
     // Prepare one of our bigInts
-    initBigInt(bigNum);
+    // initBigInt(bigNum);
 
-    // Build dem' integere components from the binary string
+    // Build dem' integer components from the binary string
     // 
     // bits within component integers are in traditional big endian,
     //   but the integers components in the components array are in little endian
     //   (ie. a number like 0xABCDEF would become [0xEF][0xCD][0xAB]) where each bracketed set is a component
-    printf("%d comps\n", (int)ceil(strlen(binaryString)/32.0));
+    // printf("%d comps\n", (int)ceil(strlen(binaryString)/32.0));
     for (int i = 0; i < (int)ceil(strlen(binaryString)/32.0); i ++)
     {
         // component has to be shorter than what's being copied in or else strncpy won't null pad it
         char component[33] = "\0";
         strncpy(component, &binaryString[i*32], 32);
-        printf("%s", component);
+        // printf("%s", component);
         bigNum->components[31-i] = atoi(component);
     }
 }
