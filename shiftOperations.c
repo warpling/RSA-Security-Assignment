@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -8,7 +9,7 @@
 void shiftLeft(unsigned int *num, int count);
 void shiftRight(unsigned int *num, int count);
 int greaterThanOrEqualTo(unsigned int *numA, unsigned int *numB, int count);
-int subtract(unsigned int *numA, unsigned int *numB, int count);
+void subtract(unsigned int *numA, unsigned int *numB, unsigned int *difference, int count);
 
 int main(int argc, char const *argv[])
 {
@@ -26,6 +27,11 @@ int main(int argc, char const *argv[])
 
     // 
 }
+
+// Number 12345678
+// Note to self: [12][34][56][78]
+// Note to self: [78][56][34][12]
+// Note to self: [87][65][43][21]
 
 void shiftLeft(unsigned int *num, int count) {
     int i;
@@ -75,7 +81,7 @@ int greaterThanOrEqualTo(unsigned int *numA, unsigned int *numB, int count) {
 
 void subtract(unsigned int *numA, unsigned int *numB, unsigned int *difference, int count) {
     
-    difference = malloc(sizeof(unsigned int) * count)
+    difference = (unsigned int*) malloc(sizeof(unsigned int) * count);
 
     for (int i = 0; i < count; i++)
     {
