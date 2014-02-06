@@ -22,7 +22,7 @@ tests: $(PARTS)
 	./part1
 
 	@echo "\n\nPart 2\n----------------------"
-	./part2
+	./part2 < part2.in
 
 	@echo "\n\nPart 3\n----------------------"
 	./part3 < part3.in
