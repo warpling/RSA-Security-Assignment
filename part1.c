@@ -38,5 +38,5 @@ int main(int argc, char const *argv[])
 void stupidPrimeGenerator(mpz_t prime, gmp_randstate_t state) {
     do {
         mpz_urandomb(prime, state, 512);
-    } while(mpz_probab_prime_p(prime, 25));
+    } while(mpz_probab_prime_p(prime, 25) < 1);
 }
