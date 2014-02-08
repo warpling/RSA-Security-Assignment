@@ -7,14 +7,14 @@
 #define NOTIFY_NOT_GREATER 5
 
 typedef struct BigInt{
-   unsigned int elements[32];
+   uint32_t components[32];
 }BigInt;
 
-__global__ void gcdKernel(int ind1, int ind2, int totNumKeys, BigInt keys[], int res);
+__global__ void gcdKernel(int base, int offset, BigInt keys[], int numKeys, char results[]);
 __device__ void  shiftR(BigInt *n);
 __device__ void  shiftL(BigInt *n);
-__device__ void cuSubtract(BigInt n, BigInt m, unsigned int *res);
+__device__ void cuSubtract(BigInt n, BigInt m);
 __device__ bool geq(BigInt *n, BigInt *m);
 __device__ bool notOne(BigInt n);
 __device__ bool notZero(BigInt n);
-__device__ BigInt gcd(BigInt n, BigInt m);
+__device__ BigInt gcd(BigInt *n, BigInt *m);
