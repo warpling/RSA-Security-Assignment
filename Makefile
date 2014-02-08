@@ -1,14 +1,29 @@
 PARTS  = serialGCD
 OUTPUT = 256-keys.out 2048-keys.out 4096-keys.out
 
+# CUDA_INC=-I/usr/local/cuda/common/inc
+# CUDA_LIBS=-L/usr/local/cuda/lib64 -lcudart
+
+CC = gcc
+NVCC = nvcc
+CUTTING_EDGE_TECHNOLOGY = -std=c99
+
+NVCCFLAGS = -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35   
+
+GMP_LIB = -I/home/clupo/gmp/include -L/home/clupo/gmp/lib
+LIBS= -lgmp
+CUMP_LIB = -L/home/clupo/cump -lcump
+
 all: $(PARTS)
 
-# part1: part1.c
-# 	gcc part1.c -lgmp -o part1
-# 	./part1
+main: main.cu bigInt
+	nvcc -o mm_cuda -O2 $(GMP_LIB) -g $(NVCCFLAGS)  main.cu bigInt.o
+
+bigInt: bigInt.c
+	$(CC) $(GMP_LIB) $(LIBS) $(CUTTING_EDGE_TECHNOLOGY) -o bigInt.o -c bigInt.c
 
 serial: serialGCD.c
-	gcc serialGCD.c -lgmp -g -o serialGCD
+	$(CC) serialGCD.c -lgmp -g -o serialGCD
 
 serialTest: serial
 	@echo "Testing 20,000 keys serially"

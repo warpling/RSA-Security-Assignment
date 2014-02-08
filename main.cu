@@ -1,6 +1,6 @@
 #include "bigInt.c"
 #include "cuda.h"
-#include "cudaruntimeapi.h"
+#include "cuda_runtime_api.h"
 
 #define MODULI_BUF_SIZE 2000
 #define MAX_LENGTH_OF_1024_BIT_NUM 311
