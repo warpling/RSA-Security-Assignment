@@ -33,7 +33,7 @@ __global__ void gcdKernel(int base, int offset, BigInt keys[], int numKeys, char
 }
 
 __device__ void  shiftR(BigInt *n) {
-   unsigned int part = 0;
+   uint32_t part = 0;
    int id = threadIdx.x;
 
    if(id != 31) {
@@ -41,9 +41,9 @@ __device__ void  shiftR(BigInt *n) {
    }
    n.components[threadIdx.x] = (n.components[threadIdx.x] >> 1) | (part << 31);
    
-   /*unsigned int part = n->components[threadIdx.x];
-   __shared__ unsigned int rsResult[BLOCKDIM_Y][BLOCKDIM_X] = {{0}};
-   unsigned int mask = 1;
+   /*uint32_t part = n->components[threadIdx.x];
+   __shared__ uint32_t rsResult[BLOCKDIM_Y][BLOCKDIM_X] = {{0}};
+   uint32_t mask = 1;
 
    if(threadIdx.x != 0) {
       rsResult[threadIdx.y][threadIdx.x - 1] |= (part & mask) << 31;
@@ -60,16 +60,16 @@ __device__ void  shiftR(BigInt *n) {
 }
 
 __device__ void  shiftL(BigInt *n) {
-   unsigned int part = 0;
+   uint32_t part = 0;
 
    if(ThreadIdx.x) {
       part = n.components[threadIdx.x - 1];
    }
    n.components[threadIdx.x] = (n.components[threadIdx.x] << 1) | (part >> 31);
 
-   /*unsigned int part = n->components[threadIdx.x];
-   __shared__ unsigned int lOverflow[BLOCKDIM_Y][BLOCKDIM_X];
-   unsigned int mask = 1 << 31;
+   /*uint32_t part = n->components[threadIdx.x];
+   __shared__ uint32_t lOverflow[BLOCKDIM_Y][BLOCKDIM_X];
+   uint32_t mask = 1 << 31;
 
    if(threadIdx.x != blockDim.x - 1) {
       lOverflow.components[threadIdx.y][threadIdx.x - 1] = (part & mask) >> 31;
@@ -88,12 +88,12 @@ __device__ void  shiftL(BigInt *n) {
 
 __device__ void cuSubtract(BigInt *n, BigInt *m) {
 
-   unsigned int partn = n->components[threadIdx.x];
-   unsigned int partm = m->components[threadIdx.x];
-   __shared__ unsigned int borrowArray[BLOCKDIM_Y][BLOCKDIM_X] = {{0}};
+   uint32_t partn = n->components[threadIdx.x];
+   uint32_t partm = m->components[threadIdx.x];
+   __shared__ uint32_t borrowArray[BLOCKDIM_Y][BLOCKDIM_X] = {{0}};
    //__shared__ short okayToGo[BLOCKDIM_Y][BLOCKDIM_X] = {{0}};
-   //unsigned int result = 0;
-   unsigned int tmp;
+   //uint32_t result = 0;
+   uint32_t tmp;
 
    //partm = ~partm;
 
@@ -310,7 +310,7 @@ __device__ bool notZero(BigInt n) {
 __device__ BigInt* gcd(BigInt *n, BigInt *m) {
 
    int i;
-   unsigned int tmp;
+   uint32_t tmp;
    BigInt *tmpptr;
 
    for(i = 0; ((n->components[0] | m->components[0]) & 1) == 0; i++) {

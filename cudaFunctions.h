@@ -7,7 +7,7 @@
 #define NOTIFY_NOT_GREATER 5
 
 typedef struct BigInt{
-   unsigned int components[32];
+   uint32_t components[32];
 }BigInt;
 
 __global__ void gcdKernel(int base, int offset, BigInt keys[], int numKeys, char results[]);
