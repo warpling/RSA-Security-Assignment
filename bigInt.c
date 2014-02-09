@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <gmp.h>
+#include "gmp.h"
 #include <math.h>
 
 typedef struct {

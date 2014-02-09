@@ -2,6 +2,7 @@
 
 __global__ void gcdKernel(int base, int offset, BigInt keys[], int numKeys, char results[]) {
    
+<<<<<<< Updated upstream
    int key1 = base + threadIdx.y;
    int key2 = offset + blockIdx.x;
 
@@ -23,6 +24,16 @@ __global__ void gcdKernel(int base, int offset, BigInt keys[], int numKeys, char
    //BigInt m; 
    
    /*for(i = ind1+row + 1; i < totNumKeys; i++) {
+=======
+   int row = blockIdx.y*blockDim.y + threadIdx.y;
+   int b, i;
+   __shared__ int results[BLOCKDIM_Y][BLOCKDIM_X];
+   BigInt n = keys[ind1+row];
+   BigInt tmp = n;
+   BigInt m;
+
+   for(i = ind1+row + 1; i < totNumKeys; i++) {
+>>>>>>> Stashed changes
       m = keys[i];
       m = gcd(tmp, m);
       if(notOne(m)) {

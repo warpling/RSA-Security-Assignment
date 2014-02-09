@@ -1,6 +1,7 @@
 #include "bigInt.c"
 #include "cuda.h"
 #include "cuda_runtime_api.h"
+#include "cudaFunctions.h"
 
 #define MODULI_BUF_SIZE 2000
 #define MAX_LENGTH_OF_1024_BIT_NUM 311
@@ -21,7 +22,7 @@ int main(int argc, char const *argv[])
 
     // create array of bigInts
     // -------------------------------------------------------------------------
-    int i = 0;
+    int i = 0, numModuli;
     int moduliArraySize = MODULI_BUF_SIZE;
 
     if (fp && !feof(fp)) {
@@ -49,6 +50,7 @@ int main(int argc, char const *argv[])
             moduli[i++] = newBigInt;
         }
     }
+    numModuli = i;
 
     fclose(fp);
 
@@ -56,6 +58,10 @@ int main(int argc, char const *argv[])
 
     // send array to CUDA
     // -------------------------------------------------------------------------
+    
+    int *keys;
+    cudaMalloc(keys, numModuli*sizeof(bigInt));
+    cudaMemcpy(keys, moduli, numModuli*sizeof(bigInt), cudaMemCpyDeviceToHost);
 
     // get back bit array
     // -------------------------------------------------------------------------
