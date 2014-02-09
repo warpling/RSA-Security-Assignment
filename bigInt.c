@@ -7,10 +7,59 @@
 
 #define NUM_INTS_IN_BIG_INT 32
 #define UINT32_LENGTH 32
+#define BUF_SIZE 2000
+#define STR_LEN_1024_BITS 311
 
 typedef struct {
     uint32_t components[NUM_INTS_IN_BIG_INT];
 } bigInt;
+
+int readBigIntsFromFile(char *filename, bigInt **bigIntArray);
+void setBigIntFromString(bigInt *bigNum, char *string);
+void printBigInt(bigInt *num);
+
+int readBigIntsFromFile(char *filename, bigInt **bigIntArray) {
+    // read in file
+    // --------------------------------------------------------------------
+    FILE *fp = fopen(filename, "r");
+
+    // create array of bigInts
+    // --------------------------------------------------------------------
+    int i = 0;
+    int arraySize = BUF_SIZE;
+
+    if (fp && !feof(fp)) {
+
+        char bigIntString[STR_LEN_1024_BITS] = "\0";
+
+        while (fgets(bigIntString, STR_LEN_1024_BITS, fp)) {
+          
+            // Trim new line
+            bigIntString[strlen(bigIntString) - 1] = '\0';
+
+            // Create bigInt
+            bigInt *newBigInt = (bigInt*) malloc(sizeof(bigInt));
+            setBigIntFromString(newBigInt, bigIntString);
+
+            // Resize moduli array if necessary
+            if(i == arraySize) {
+                // TODO: You best not read in over 2.14 billion elements
+                arraySize *= 2;
+                bigIntArray = (bigInt**) realloc(bigIntArray, (arraySize * sizeof(bigInt**)));
+            }
+
+            // Assign into bigIntArray array
+            bigIntArray[i++] = newBigInt;
+        }
+    }
+    else {
+        fprintf(stderr, "Error reading in the file \'%s\'\n", filename);
+        return -1;
+    }
+
+    fclose(fp);
+    return i;
+}
 
 // Take in string and turn it into a 1024 bit int
 void setBigIntFromString(bigInt *bigNum, char *string) {
@@ -43,8 +92,8 @@ void setBigIntFromString(bigInt *bigNum, char *string) {
     }
 }
 
-printBigInt(bigInt *num) {
-    for (int i = BIG_INT_COMPONENT_COUNT; i >= 0 ; --i)
+void printBigInt(bigInt *num) {
+    for (int i = NUM_INTS_IN_BIG_INT; i >= 0 ; --i)
         printf("%d", num->components[i]);
     printf("\n");
 }
