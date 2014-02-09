@@ -36,7 +36,6 @@ int main(int argc, char const *argv[])
 
             // Create bigInt
             bigInt *newBigInt = (bigInt*) malloc(sizeof(bigInt));
-            initBigInt(newBigInt);
             setBigIntFromString(newBigInt, bigIntString);
 
             // Resize moduli array if necessary
