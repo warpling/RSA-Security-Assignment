@@ -3,6 +3,8 @@
 #include "cuda_runtime_api.h"
 #include "cudaFunctions.h"
 
+#define MODULI_BUF_SIZE 2000
+
 int main(int argc, char const *argv[])
 {
     if(argc < 2) {
@@ -25,9 +27,9 @@ int main(int argc, char const *argv[])
     // send array to CUDA
     // -------------------------------------------------------------------------
     
-    int *keys;
-    cudaMalloc(keys, numModuli*sizeof(bigInt));
-    cudaMemcpy(keys, moduli, numModuli*sizeof(bigInt), cudaMemCpyDeviceToHost);
+    // int *keys;
+    // cudaMalloc(keys, numModuli*sizeof(bigInt));
+    // cudaMemcpy(keys, moduli, numModuli*sizeof(bigInt), cudaMemCpyDeviceToHost);
 
     // get back bit array
     // -------------------------------------------------------------------------

@@ -14,11 +14,11 @@ typedef struct {
     uint32_t components[NUM_INTS_IN_BIG_INT];
 } bigInt;
 
-int readBigIntsFromFile(char *filename, bigInt **bigIntArray);
+int readBigIntsFromFile(const char *filename, bigInt **bigIntArray);
 void setBigIntFromString(bigInt *bigNum, char *string);
 void printBigInt(bigInt *num);
 
-int readBigIntsFromFile(char *filename, bigInt **bigIntArray) {
+int readBigIntsFromFile(const char *filename, bigInt **bigIntArray) {
     // read in file
     // --------------------------------------------------------------------
     FILE *fp = fopen(filename, "r");
