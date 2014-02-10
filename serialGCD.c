@@ -57,7 +57,6 @@ int main(int argc, char const *argv[])
         {
             for (int j = (i+1); j < numModuli; j++)
             {
-
                 mpz_clear(gcd); mpz_init(gcd);
                 mpz_gcd(gcd, moduli[i], moduli[j]);
 

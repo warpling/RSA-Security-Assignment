@@ -1,11 +1,8 @@
-PARTS  = serialGCD
-OUTPUT = 256-keys.out 2048-keys.out 4096-keys.out
-
 # CUDA_INC=-I/usr/local/cuda/common/inc
 # CUDA_LIBS=-L/usr/local/cuda/lib64 -lcudart
 
-CC = LD_LIBRARY_PATH=/home/clupo/gmp/lib/ gcc
-NVCC = LD_LIBRARY_PATH=/home/clupo/gmp/lib nvcc
+CC = LD_LIBRARY_PATH=/home/clupo/gmp/lib/; gcc
+NVCC = LD_LIBRARY_PATH=/home/clupo/gmp/lib; nvcc
 CUTTING_EDGE_TECHNOLOGY = -std=c99
 
 NVCCFLAGS = -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35   
@@ -29,7 +26,7 @@ serial: serialGCD.c
 
 # How it know where bigInt.o is?
 outputTest: outputTesting.c bigInt
-	$(CC) outputTesting.c -lgmp -g -o outputTesting
+	$(CC) outputTesting.c -g -o outputTesting
 
 serialTest: serial
 	@echo "Testing 20,000 keys serially"

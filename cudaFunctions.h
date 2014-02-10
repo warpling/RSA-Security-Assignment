@@ -11,7 +11,7 @@
     uint32_t *components;
 } bigInt;*/
 
-__global__ void subTest(bigInt *key1, bigInt *key2, bigInt *result);
+//__global__ void subTest(bigInt *key1, bigInt *key2, bigInt *result);
 __global__ void gcdKernel(int base, int offset, bigInt *keys, int numKeys, uint32_t *results);
 __device__ void  shiftR(uint32_t *n);
 __device__ void  shiftL(uint32_t *n);
