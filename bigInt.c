@@ -73,34 +73,30 @@ void setBigIntFromString(bigInt *bigNum, char *string) {
     // TODO: find out why binaryString isn't getting set through the param
     char binaryString[(UINT32_LENGTH * INTS_IN_BIG_INT) + 1];
     mpz_get_str(binaryString, 2, num);
-    // Debug:
-    // printf("Binary String (%lu char long): %s\n", strlen(binaryString), binaryString);
 
-    // Build dem' integer components from the binary string
+    // zero pad the front of the string
+    char paddedBinaryString[1025];
+    int offset = 1024 - (strlen(binaryString));
+    strncpy(&paddedBinaryString[offset], binaryString, (strlen(binaryString)));
+    for (int i = 0; i < offset; ++i)
+        paddedBinaryString[i] = '0';
+    paddedBinaryString[1024] = '\0';
+
+
+    // Debug:
+    // printf("Binary String (%lu char long): %s\n", strlen(paddedBinaryString), paddedBinaryString);
+
+    // Build the integer components from the binary string
     // 
     // bits within component integers are in traditional big endian,
     //   but the integers components in the components array are in little endian
     //   (ie. a number like 0xABCDEF would become [0xEF][0xCD][0xAB]) where each bracketed set is a component
-
-    for (int i = strlen(binaryString)/UINT32_LENGTH; i >= 0; i--)
-    {
-        // TODO: Possible indexing bug if a number is 1024 bits?
+    for (int i = 0; i < INTS_IN_BIG_INT; i++) {
 
         char componentString[UINT32_LENGTH] = "\0";
 
-        // indexing 32 bit chunks from the right hand side -- things get ugly
-        int subStrIdx = strlen(binaryString) - ((INTS_IN_BIG_INT - i) * UINT32_LENGTH);
+        strncpy(componentString, &paddedBinaryString[i*UINT32_LENGTH], UINT32_LENGTH);
 
-        // The last index will always be less than or equal to zero, make sure it's zero
-        subStrIdx = subStrIdx < 0 ? 0 : subStrIdx;
-
-        // Calculate how much to copy. This will usually be 32 bits, but the last chunk is a special case
-        int subStrLen = subStrIdx == 0 ? (strlen(binaryString) % 32) : UINT32_LENGTH;
-
-        // Actually do the copy
-        strncpy(componentString, &binaryString[subStrIdx], subStrLen);
-
-        // Turn the copied bits into a bigInt component int
         bigNum->components[(INTS_IN_BIG_INT-1)-i] = (uint32_t) strtol(componentString, NULL, 2);;
     }
 }
