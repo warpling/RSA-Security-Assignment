@@ -1,7 +1,7 @@
 #include "bigInt.h"
 #include "cudaFunctions.h"
 
-__global__ void subTest(bigInt *key1, bigInt *key2, bigInt *result) {
+/*__global__ void subTest(bigInt *key1, bigInt *key2, bigInt *result) {
    int i;
    uint32_t *ptr;
    uint32_t *keyptr1, *keyptr2;
@@ -28,23 +28,22 @@ __global__ void subTest(bigInt *key1, bigInt *key2, bigInt *result) {
    }
    else {
       result.components[threadIdx.x] = 0;
-   }*/
+   }
    //result.components[threadIdx.x] = key1.components[threadIdx.x];
-} 
+} */
 
 __global__ void gcdKernel(int base, int offset, bigInt *keys, int numKeys, uint32_t *results) {
    
    int key1 = base;
    int key2 = offset + blockIdx.x;
-   uint32_t mask = 1;
+   uint32_t mask = (uint32_t)(1 << 31);
    uint32_t *keyptr1, *keyptr2;
    __shared__ uint32_t sharedkey1[BLOCKDIM_X];
    __shared__ uint32_t sharedkey2[BLOCKDIM_X];
    uint32_t *res;
    
-   /*__shared__ int results[BLOCKDIM_Y][BLOCKDIM_X];*/
    
-   //if(key1 < key2 && key2 < numKeys && key1 < numKeys) {
+   if(key1 < key2 && key2 < numKeys && key1 < numKeys) {
       sharedkey1[threadIdx.x] = keys[key1].components[threadIdx.x];
       sharedkey2[threadIdx.x] = keys[key2].components[threadIdx.x];
       __syncthreads();
@@ -52,30 +51,13 @@ __global__ void gcdKernel(int base, int offset, bigInt *keys, int numKeys, uint3
       keyptr2 = sharedkey2;
       res = gcd(keyptr1, keyptr2);
       if(notOne(res)) {
-         atomicOr(res + (key1/32), mask << (key1%32));
-         atomicOr(res + (key2/32), mask << (key2%32));
-         if(threadIdx.x == 0) {
-            printf("found bad key!, gcd = %d, key1: %d, key2: %d\n", res[threadIdx.x], key1, key2);
-         }
+         atomicOr(results + (key1/32), mask >> (key1%32));
+         atomicOr(results + (key2/32), mask >> (key2%32));
+         /*if(threadIdx.x == 0) {
+            //printf("found bad key!, gcd = %d, key1: %d, key2: %d\n", res[threadIdx.x], key1, key2);
+         }*/
       }
-      else {
-         if(threadIdx.x == 0) {
-            printf("key ok\n");
-         }
-      }
-   //}
-   /*bigInt n = keys[ind1+row];
-   /bigInt tmp = n;
-   /bigInt m;*/ 
-   
-   /*for(i = ind1+row + 1; i < totNumKeys; i++) {
-      m = keys[i];
-      m = gcd(tmp, m);
-      if(notOne(m)) {
-         res[totNumKeys*(ind1+row) + i] = 1;
-      }
-
-   }*/
+   }
 }
 
 __device__ void  shiftR(uint32_t *n) {
@@ -146,7 +128,6 @@ __device__ bool geq(uint32_t *n, uint32_t *m) {
  
 __device__ bool notOne(uint32_t *n) {
    int ind = threadIdx.x;
-   int key = threadIdx.y;
    int res = 0;
 
    if(ind != 0 && n[ind] != 0) {
@@ -173,9 +154,8 @@ __device__ bool notZero(uint32_t *n) {
 
 __device__ uint32_t* gcd(uint32_t *n, uint32_t *m) {
 
-   int i, j = 0;
+   int i;
    uint32_t tmp;
-   uint32_t test;
    uint32_t *tmpptr;
 
    for(i = 0; ((n[0] | m[0]) & 1) == 0; i++) {
@@ -209,3 +189,4 @@ __device__ uint32_t* gcd(uint32_t *n, uint32_t *m) {
    }
    return n;
 }
+
