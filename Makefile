@@ -29,7 +29,7 @@ serial: serialGCD.c
 
 # How it know where bigInt.o is?
 outputTest: outputTesting.c bigInt
-	$(CC) -c outputTesting.c -g -o outputTesting
+	$(CC) outputTesting.c -g -o outputTesting
 
 serialTest: serial
 	@echo "Testing 20,000 keys serially"

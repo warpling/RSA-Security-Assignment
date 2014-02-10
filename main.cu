@@ -138,22 +138,27 @@ int main(int argc, char *argv[])
     cudaMemcpy((void *) cuModuli, (void *) moduli, numKeys*sizeof(bigInt), cudaMemcpyHostToDevice);
     cudaMalloc((void **) &cuBitVec, ceil(numKeys/32.0)*sizeof(uint32_t));
     cudaMemset((void *) cuBitVec, 0, ceil(numKeys/32.0)*sizeof(uint32_t)); */ 
-    /*//for(i = 0; i < numKeys; i++) {
+    //for(i = 0; i < numKeys; i++) {
        //for(j = i + 1; j < numKeys; j++) {
-         gcdKernel<<<dimGrid, dimBlock>>>(64, 66, cuModuli, numKeys, cuBitVec);
+         // gcdKernel<<<dimGrid, dimBlock>>>(64, 66, cuModuli, numKeys, cuBitVec);
       //}
     //}
-    cudaMemcpy((void *) bitVec, (void *) cuBitVec, ceil(numKeys/32.0)*sizeof(uint32_t), cudaMemcpyDeviceToHost);
+    // cudaMemcpy((void *) bitVec, (void *) cuBitVec, ceil(numKeys/32.0)*sizeof(uint32_t), cudaMemcpyDeviceToHost);
     
+    // Dummy data
+    bitVec[0] = 0x01;
+    bitVec[1] = 0x01;
+    bitVec[2] = 0x01;
+
+    mask = 1 << 31;
     for(i = 0; i < ceil(numKeys/32.0); i++) {
-       mask = 1;
        for(j = 0; j < 32; j++) {
-          if(bitVec[i] & (mask << j)) {
+          if(bitVec[i] & (mask >> j)) {
              count ++;
           }
        }
     }
-    printf("numBadKeys: %d\n", count);*/
+    printf("numBadKeys: %d\n", count);
 
     //num1.components = (uint32_t *) malloc(32*sizeof(uint32_t));
     //num2.components = (uint32_t *) malloc(32*sizeof(uint32_t));
@@ -161,16 +166,16 @@ int main(int argc, char *argv[])
     //for(i = 0; i < 32; i++) {
       // subRes.components[i] = 0;
     //}
-    num1 = (bigInt *) malloc(sizeof(bigInt));
-    num2 = (bigInt *) malloc(sizeof(bigInt));
-    subRes = (bigInt *) malloc(sizeof(bigInt));
-    num1->components[0] = 30;
-    num2->components[0] = 5;
+    // num1 = (bigInt *) malloc(sizeof(bigInt));
+    // num2 = (bigInt *) malloc(sizeof(bigInt));
+    // subRes = (bigInt *) malloc(sizeof(bigInt));
+    // num1->components[0] = 30;
+    // num2->components[0] = 5;
 
-    for(i = 1; i < 32; i++) {
-       num1->components[i] = 0;
-       num2->components[i] = 0;
-    }
+    // for(i = 1; i < 32; i++) {
+    //    num1->components[i] = 0;
+    //    num2->components[i] = 0;
+    // }
     //num1.components[31] = 45;
     //num2.components[31] = 44;
     //num1.components[1] = 33;
@@ -180,19 +185,19 @@ int main(int argc, char *argv[])
     //num1.components[30] = 0;
     //num1.components[29] = 0;
     //num2.components[0] = ;
-    cudaMalloc((void **) &cuNum1, sizeof(bigInt));
-    cudaMalloc((void **) &cuNum2, sizeof(bigInt));
-    cudaMalloc((void **) &cuSubRes, sizeof(bigInt));
-    //cudaMemset((void *) cuSubRes.components, 0, 32*sizeof(uint32_t));
-    cudaMemcpy((void *) cuNum1, (void *) num1, sizeof(bigInt), cudaMemcpyHostToDevice);
-    cudaMemcpy((void *) cuNum2, (void *) num2, sizeof(bigInt), cudaMemcpyHostToDevice);
-    subTest<<<1, dimBlock>>>(cuNum1, cuNum2, cuSubRes);
-    HANDLE_ERROR(cudaMemcpy((void *) subRes, (void *) cuSubRes, sizeof(bigInt), cudaMemcpyDeviceToHost));
+    // cudaMalloc((void **) &cuNum1, sizeof(bigInt));
+    // cudaMalloc((void **) &cuNum2, sizeof(bigInt));
+    // cudaMalloc((void **) &cuSubRes, sizeof(bigInt));
+    // //cudaMemset((void *) cuSubRes.components, 0, 32*sizeof(uint32_t));
+    // cudaMemcpy((void *) cuNum1, (void *) num1, sizeof(bigInt), cudaMemcpyHostToDevice);
+    // cudaMemcpy((void *) cuNum2, (void *) num2, sizeof(bigInt), cudaMemcpyHostToDevice);
+    // subTest<<<1, dimBlock>>>(cuNum1, cuNum2, cuSubRes);
+    // HANDLE_ERROR(cudaMemcpy((void *) subRes, (void *) cuSubRes, sizeof(bigInt), cudaMemcpyDeviceToHost));
 
-    for(i = 31; i >=0; i--) {
-       printf("%u ", subRes->components[i]);
-    }
-    printf("\n");
+    // for(i = 31; i >=0; i--) {
+    //    printf("%u ", subRes->components[i]);
+    // }
+    // printf("\n");
 
     // get back bit array
     // -------------------------------------------------------------------------
