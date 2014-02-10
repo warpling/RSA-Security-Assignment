@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
     moduli = (bigInt*) malloc(numKeys*sizeof(bigInt));
     bitVec = (uint32_t*) malloc(ceil(numKeys/32.0)*sizeof(uint32_t));
 
-    bigInt **moduli = (bigInt**) malloc(MODULI_BUF_SIZE * sizeof(bigInt**));
+    bigInt *moduli = (bigInt*) malloc(MODULI_BUF_SIZE * sizeof(bigInt**));
 
     // Read in the bigInts
     int numModuli = readBigIntsFromFile(argv[1], moduli);
