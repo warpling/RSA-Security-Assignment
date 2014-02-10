@@ -14,7 +14,7 @@ typedef struct {
     uint32_t components[INTS_IN_BIG_INT];
 } bigInt;
 
-int readBigIntsFromFile(const char *filename, bigInt *bigIntArray);
-void setBigIntFromString(bigInt *bigNum, char *string);
+int readBigIntsFromFile(const char *filename, bigInt *bigIntArray, mpz_t *mpzArray);
+void setBigIntFromString(bigInt *bigNum, mpz_t mpzNum, char *string);
 void printBigInt(bigInt *num);
 

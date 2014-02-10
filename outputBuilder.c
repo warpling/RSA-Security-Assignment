@@ -54,9 +54,9 @@ void printOutput (mpz_t *moduli, uint32_t *badModuliFlags, int totalModuliCount)
     }
 }
 
-void generatePrivateKeyFromModulusAndPrime(mpz_t privateKey, mpz_t modulus, mpz_t prime) {
+// void generatePrivateKeyFromModulusAndPrime(mpz_t privateKey, mpz_t modulus, mpz_t prime) {
     
-}
+// }
 
 void generatePrivateKeyFromModulusAndPrime(mpz_t privateKey, mpz_t modulus, mpz_t prime) {
 
