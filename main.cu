@@ -109,12 +109,13 @@ int main(int argc, char *argv[])
     getFileStats(file, &numKeys);
     munmap(file, len);
     printf("numkeys: %d\n", numKeys);
-    moduli = (bigInt*) malloc(numKeys*sizeof(bigInt));
+    bigInt_moduli = (bigInt*) malloc(numKeys*sizeof(bigInt));
+    mpz_moduli = (mpz_t*) malloc(numKeys*sizeof(mpz_t));
     bitVec = (uint32_t*) malloc(ceil(numKeys/32.0)*sizeof(uint32_t));
     
     // read in file
     // -------------------------------------------------------------------------
-    int numModuli = readBigIntsFromFile(argv[1], moduli);
+    int numModuli = readBigIntsFromFile(argv[1], bigInt_moduli, mpz_moduli);
 
     if(numModuli < 0) {
         fprintf(stderr, "No moduli read. Exiting.\n");
@@ -126,7 +127,7 @@ int main(int argc, char *argv[])
     // send array to CUDA
     // -------------------------------------------------------------------------
     HANDLE_ERROR(cudaMalloc((void **) &cuModuli, numKeys*sizeof(bigInt)));
-    HANDLE_ERROR(cudaMemcpy((void *) cuModuli, (void *) moduli, numKeys*sizeof(bigInt), cudaMemcpyHostToDevice));
+    HANDLE_ERROR(cudaMemcpy((void *) cuModuli, (void *) bigInt_moduli, numKeys*sizeof(bigInt), cudaMemcpyHostToDevice));
     HANDLE_ERROR(cudaMalloc((void **) &cuBitVec, ceil(numKeys/32.0)*sizeof(uint32_t)));
     cudaMemset((void *) cuBitVec, 0, ceil(numKeys/32.0)*sizeof(uint32_t));
     
@@ -139,19 +140,21 @@ int main(int argc, char *argv[])
     HANDLE_ERROR(cudaMemcpy((void *) bitVec, (void *) cuBitVec, ceil(numKeys/32.0)*sizeof(uint32_t), cudaMemcpyDeviceToHost));
     
     /*Go through bit vector to make sure right output is there.*/
-    mask = (uint32_t)(1 << 31);
-    for(i = 0; i < ceil(numKeys/32.0); i++) {
-       for(j = 0; j < 32; j++) {
-          if(bitVec[i] & (mask >> j)) {
-             printf("Key: %d\n", i*32 + j);
-             count ++;
-          }
-       }
-    }
-    printf("numBadKeys: %d\n", count);
+    // mask = (uint32_t)(1 << 31);
+    // for(i = 0; i < ceil(numKeys/32.0); i++) {
+    //    for(j = 0; j < 32; j++) {
+    //       if(bitVec[i] & (mask >> j)) {
+    //          printf("Key: %d\n", i*32 + j);
+    //          count ++;
+    //       }
+    //    }
+    // }
+    // printf("numBadKeys: %d\n", count);
 
     // calculate and print results
     // -------------------------------------------------------------------------
+
+    printOutput(mpz_moduli, bitVec, numkeys); 
 
     return 0;
 }

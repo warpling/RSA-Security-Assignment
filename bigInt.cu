@@ -1,6 +1,6 @@
 #include "bigInt.h"
 
-int readBigIntsFromFile(const char *filename, bigInt *bigIntArray) {
+int readBigIntsFromFile(const char *filename, bigInt *bigIntArray, mpz_t *mpzArray) {
     // read in file
     // --------------------------------------------------------------------
     FILE *fp = fopen(filename, "r");
@@ -19,9 +19,11 @@ int readBigIntsFromFile(const char *filename, bigInt *bigIntArray) {
             // Trim new line
             bigIntString[strlen(bigIntString) - 1] = '\0';
 
-            // Create bigInt
+            // Create bigInt and mpz_t representatio of the number
             bigInt newBigInt;
-            setBigIntFromString(&newBigInt, bigIntString);
+            mpz_t mpzVersion;
+            mpz_init(mpzVersion);
+            setBigIntFromString(&newBigInt, mpzVersion, bigIntString);
 
             // Resize moduli array if necessary
             if(i == arraySize) {
@@ -30,7 +32,8 @@ int readBigIntsFromFile(const char *filename, bigInt *bigIntArray) {
                 bigIntArray = (bigInt*) realloc(bigIntArray, (arraySize * sizeof(bigInt*)));
             }
 
-            // Assign into bigIntArray array
+            // Assign both versions of numbers into their arrays
+            mpzArray[i] = mpzVersion;
             bigIntArray[i++] = newBigInt;
         }
     }
@@ -43,13 +46,15 @@ int readBigIntsFromFile(const char *filename, bigInt *bigIntArray) {
     return i-1;
 }
 
-// Take in string and turn it into a 1024 bit int
-void setBigIntFromString(bigInt *bigNum, char *string) {
+// Take in string and turn it into a 1024 bit int (in bigInt and mpz_t format)
+void setBigIntFromString(bigInt *bigNum, mpz_t mpzNum, char *string) {
 
     // Initializes 1024 bit mpz number
     mpz_t num; mpz_init2(num, (UINT32_LENGTH * INTS_IN_BIG_INT));
     // Read in base 10 string to mpz representation
     mpz_set_str(num, string, 10);
+    // Save off mpz_t version
+    mpzNum = num;
 
     // Create output string in base 2
     // TODO: find out why binaryString isn't getting set through the param
