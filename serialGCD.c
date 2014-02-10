@@ -53,7 +53,7 @@ int main(int argc, char const *argv[])
         mpz_t gcd;
         mpz_init(gcd);
 
-        for (int i = 0; i < numModuli; i++)
+        for (i = 0; i < numModuli; i++)
         {
             for (int j = (i+1); j < numModuli; j++)
             {
