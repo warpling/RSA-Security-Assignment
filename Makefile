@@ -1,6 +1,3 @@
-PARTS  = serialGCD
-OUTPUT = 256-keys.out 2048-keys.out 4096-keys.out
-
 # CUDA_INC=-I/usr/local/cuda/common/inc
 # CUDA_LIBS=-L/usr/local/cuda/lib64 -lcudart
 
