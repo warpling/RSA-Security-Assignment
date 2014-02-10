@@ -17,17 +17,21 @@ CUMP_LIB = -L/home/clupo/cump -lcump
 all: $(PARTS)
 
 main: main.cu bigInt
-	nvcc -o mm_cuda -O2 $(GMP_LIB) -g $(NVCCFLAGS)  main.cu bigInt.o
+	nvcc -o mm_cuda -O2 $(GMP_LIB) -g $(NVCCFLAGS) main.cu bigInt.o
 
 bigInt: bigInt.c
-	$(CC) $(GMP_LIB) $(LIBS) $(CUTTING_EDGE_TECHNOLOGY) -o bigInt.o -c bigInt.c
+	$(CC) -c bigInt.c -o bigInt.o
 
 serial: serialGCD.c
 	$(CC) serialGCD.c -lgmp -g -o serialGCD
 
+# How it know where bigInt.o is?
+outputTest: outputTesting.c bigInt
+	$(CC) outputTesting.c -lgmp -g -o outputTesting
+
 serialTest: serial
 	@echo "Testing 20,000 keys serially"
-	./serialGCD keys/2K-keys.txt > 20K-keys.out
+	./serialGCD keys/2000keys.txt > 2000-keys.out
 
 serialTestSmall: serial
 	@echo "Testing 256 keys serially:"
