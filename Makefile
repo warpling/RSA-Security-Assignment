@@ -4,8 +4,8 @@ OUTPUT = 256-keys.out 2048-keys.out 4096-keys.out
 # CUDA_INC=-I/usr/local/cuda/common/inc
 # CUDA_LIBS=-L/usr/local/cuda/lib64 -lcudart
 
-CC = gcc
-NVCC = nvcc
+CC = LD_LIBRARY_PATH=/home/clupo/gmp/lib/ gcc
+NVCC = LD_LIBRARY_PATH=/home/clupo/gmp/lib nvcc
 CUTTING_EDGE_TECHNOLOGY = -std=c99
 
 NVCCFLAGS = -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35   
@@ -25,7 +25,7 @@ cudaFunctions: cudaFunctions.cu
 	$(NVCC) -o cudaFunctions.o -O2 -g $(NVCCFLAGS) cudaFunctions.cu
 
 serial: serialGCD.c
-	$(CC) serialGCD.c $(GMP_LIB) -pg $(LIBS) $(CUTTING_EDGE_TECHNOLOGY) -o serialGCD
+	$(CC) serialGCD.c $(GMP_LIB) $(LIBS) -pg $(CUTTING_EDGE_TECHNOLOGY) -o serialGCD
 
 # How it know where bigInt.o is?
 outputTest: outputTesting.c bigInt
