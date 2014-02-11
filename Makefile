@@ -1,8 +1,5 @@
-# CUDA_INC=-I/usr/local/cuda/common/inc
-# CUDA_LIBS=-L/usr/local/cuda/lib64 -lcudart
-
-CC = LD_LIBRARY_PATH=/home/clupo/gmp/lib/; gcc
-NVCC = LD_LIBRARY_PATH=/home/clupo/gmp/lib; nvcc
+CC = gcc
+NVCC = nvcc
 CUTTING_EDGE_TECHNOLOGY = -std=c99
 
 NVCCFLAGS = -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35   
@@ -10,22 +7,22 @@ NVCCFLAGS = -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm
 GMP_LIB = -I/home/clupo/gmp/include -L/home/clupo/gmp/lib -lgmp
 CUMP_LIB = -L/home/clupo/cump -lcump
 
-#all: $(PARTS)
-all:
-	nvcc -o rsaCuda -pg ~clupo/gmp/lib/libgmp.a -g $(GMP_LIB) $(LIBS) -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 main.cu bigInt.cu cudaFunctions.cu outputBuilder.cu 
+parallel:
+	LD_LIBRARY_PATH=/home/clupo/gmp/lib
+	nvcc -o rsaCuda -pg ~clupo/gmp/lib/libgmp.a -g $(GMP_LIB) $(LIBS) $(NVCCFLAGS) main.cu bigInt.cu cudaFunctions.cu outputBuilder.cu
 
+serial: serialGCD.cu
+	LD_LIBRARY_PATH=/home/clupo/gmp/lib
+	$(NVCC) -o serialGCD -O2 $(GMP_LIB) -lm -g serialGCD.cu outputBuilder.cu
 
-main: main.cu bigInt
-	$(NVCC) -o mm_cuda -O2 $(GMP_LIB) -g $(NVCCFLAGS)  main.cu bigInt.o
+# main: main.cu bigInt
+	# $(NVCC) -o mm_cuda -O2 $(GMP_LIB) -g $(NVCCFLAGS) main.cu bigInt.o
 
 bigInt: bigInt.cu
 	$(NVCC) -c bigInt.cu $(GMP_LIB) $(LIBS) -g $(NVCCFLAGS) -o bigInt.o
 
 cudaFunctions: cudaFunctions.cu
 	$(NVCC) -o cudaFunctions.o -O2 $(GMP_LIB) $(LIBS) -g $(NVCCFLAGS) -c cudaFunctions.cu
-
-serial: serialGCD.c
-	$(CC) serialGCD.c $(GMP_LIB) $(LIBS) -pg $(CUTTING_EDGE_TECHNOLOGY) -o serialGCD
 
 outputTest: outputTesting.cu bigInt
 	$(NVCC) outputTesting.cu $(GMP_LIB) $(LIBS) -g -o outputTesting

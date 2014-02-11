@@ -89,8 +89,6 @@ int main(int argc, char *argv[])
    size_t len;
    int i = 0, j;
    int numKeys = 0;
-   uint32_t mask;
-   int count = 0;
    dim3 dimBlock(32, 1);
 
    if(argc < 2) {
@@ -138,23 +136,16 @@ int main(int argc, char *argv[])
     }
 
     HANDLE_ERROR(cudaMemcpy((void *) bitVec, (void *) cuBitVec, ceil(numKeys/32.0)*sizeof(uint32_t), cudaMemcpyDeviceToHost));
-    
-    /*Go through bit vector to make sure right output is there.*/
-    // mask = (uint32_t)(1 << 31);
-    // for(i = 0; i < ceil(numKeys/32.0); i++) {
-    //    for(j = 0; j < 32; j++) {
-    //       if(bitVec[i] & (mask >> j)) {
-    //          printf("Key: %d\n", i*32 + j);
-    //          count ++;
-    //       }
-    //    }
-    // }
-    // printf("numBadKeys: %d\n", count);
 
     // calculate and print results
     // -------------------------------------------------------------------------
 
-    printOutput(mpz_moduli, bitVec, numKeys); 
+    // malloc an overly ambitiously large array to hold the bad things
+    mpz_t *badModuli = (mpz_t *) malloc(MODULI_BUF_SIZE * sizeof(mpz_t));
+
+    int badModuliCount = generateBadModuliArray(badModuli, mpz_moduli, bitVec, numKeys);
+
+    printOutput(badModuli, badModuliCount); 
 
     return 0;
 }

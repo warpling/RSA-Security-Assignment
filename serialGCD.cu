@@ -2,10 +2,9 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <gmp.h>
+#include "outputBuilder.h"
 
 #define MODULI_BUF_SIZE 2000
-
-int fsize(FILE *fp);
 
 int main(int argc, char const *argv[])
 {
@@ -15,18 +14,13 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    // read in file
+    // read in file/moduli
     // -------------------------------------------------------------------------
     FILE *fp = fopen((char *)argv[1], "r");
-
-    // GCD all pairs
-    // -------------------------------------------------------------------------
 
     if (fp && !feof(fp)) {
 
         int numModuli;
-        // int numModuli = fsize(fp);
-        // printf(">>%d\n", numModuli);
 
         // TODO: Is this bad? Should we be mallocing?
         mpz_t *moduli = (mpz_t*) malloc(MODULI_BUF_SIZE * sizeof(mpz_t));
@@ -40,35 +34,35 @@ int main(int argc, char const *argv[])
                 // TODO: You best not read in over 2.14 billion elements
                 moduliArraySize *= 2;
                 moduli = (mpz_t*) realloc(moduli, (moduliArraySize * sizeof(mpz_t)));
-            }  
+            }
         } while(scanResult > 0);
 
         numModuli = i-1;
 
-        // for (int i = 0; i < numModuli; ++i) {
-        //     mpz_init(moduli[i]);
-        //     gmp_fscanf(fp, "%Zd", moduli[i]); 
-        // }
+        // GCD all pairs
+        // ---------------------------------------------------------------------
 
         mpz_t gcd;
         mpz_init(gcd);
 
         for (i = 0; i < numModuli; i++)
         {
-            for (int j = (i+1); j < numModuli; j++)
+            int j;
+            for (j = (i+1); j < numModuli; j++)
             {
                 mpz_clear(gcd); mpz_init(gcd);
                 mpz_gcd(gcd, moduli[i], moduli[j]);
 
-                // Debug:
-                // gmp_printf("  %d <--> %d\t", i, j);
-                // if(mpz_cmp_ui(gcd, 1) > 0)
-                //     printf("GCD FOUND\n");
-                // else
-                //     printf("-       -\n");
+                if(mpz_cmp_ui(gcd, 1) > 0) {
+                    // If it's a bad key, print its stuff
+                    mpz_t privateKey; mpz_init(privateKey);
+                    generatePrivateKeyFromModulusAndPrime(privateKey, moduli[i], gcd);
+                    gmp_printf("%Zd:%Zd\n", moduli[i], privateKey);
 
-                if(mpz_cmp_ui(gcd, 1) > 0)
-                    gmp_printf("%Zd\n%Zd\n", moduli[i], moduli[j]);
+                    mpz_clear(privateKey); mpz_init(privateKey);
+                    generatePrivateKeyFromModulusAndPrime(privateKey, moduli[j], gcd);
+                    gmp_printf("%Zd:%Zd\n", moduli[j], privateKey);
+                }
 
             }
         }
@@ -80,31 +74,6 @@ int main(int argc, char const *argv[])
         fprintf(stderr, "Are you sure it\'s a file of moduli?\n");
         return -1;
     }
-
-
-
-
-
-
-
-    // mpz_t numA, numB, gcd;
-
-    // mpz_init(numA); //mpz_set_ui(numA, 48);
-    // mpz_init(numB); //mpz_set_ui(numB, 18);
-    // mpz_init(gcd);
-
-    // gmp_printf("Input first number: ");
-    // gmp_scanf("%Zd", numA);
-    // gmp_printf("Input second number: ");
-    // gmp_scanf("%Zd", numB);
-
-    // // Calculate and print output
-    // // (they separated because euclidianGCD dirties the inputs)
-    // gmp_printf("GDC of %Zd and %Zd is ", numA, numB);
-    // euclidianGCD(&gcd, numA, numB);
-    // gmp_printf(" %Zd!\n", gcd);
-
-    // return 0;
 }
 
 void euclidianGCD(mpz_t *gcd, mpz_t numA, mpz_t numB) {
@@ -140,20 +109,4 @@ void euclidianGCD(mpz_t *gcd, mpz_t numA, mpz_t numB) {
         }
 
     } while (mpz_cmp_ui(remainder, 0) > 0); // Should this just be while(true)
-}
-
-// File length function
-// source: http://stackoverflow.com/questions/4278845/count-the-lines-of-a-file-in-c
-int fsize(FILE *fp) {
-    int ch, lines;
-
-    while (EOF != (ch=fgetc(fp)))
-        if (ch=='\n')
-            ++lines;
-
-    // Remember to rewind the VCR for the next renter!
-    rewind(fp);
-
-    // Count the last line, even if it doesn't have a trailing newline
-    return (lines + 1);
 }

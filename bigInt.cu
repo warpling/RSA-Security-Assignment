@@ -30,11 +30,12 @@ int readBigIntsFromFile(const char *filename, bigInt *bigIntArray, mpz_t *mpzArr
                 // TODO: You best not read in over 2.14 billion elements
                 arraySize *= 2;
                 bigIntArray = (bigInt*) realloc(bigIntArray, (arraySize * sizeof(bigInt*)));
+                bigIntArray = (bigInt*) realloc(bigIntArray, (arraySize * sizeof(bigInt*)));
             }
 
             // Assign both versions of numbers into their arrays
             mpz_init(mpzArray[i]);
-	    mpz_set(mpzArray[i], mpzVersion);
+    	    mpz_set(mpzArray[i], mpzVersion);
             bigIntArray[i++] = newBigInt;
         }
     }
