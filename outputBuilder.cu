@@ -30,7 +30,7 @@ void printOutput (mpz_t *badModuli, int badModuliCount) {
 }
 
 // badModuli must be adequately malloc'd before calling...
-void generateBadModuliArray(mpz_t *badModuli, mpz_t *moduli, uint32_t *badModuliFlags, int totalModuliCount) {
+int generateBadModuliArray(mpz_t *badModuli, mpz_t *moduli, uint32_t *badModuliFlags, int totalModuliCount) {
 
     // badModuliFlags contains a packed set of bit flags that represent if a particular moduli is bad
     // We must first serially re-compute the GCD of the bad moduli and when we do, print them alongside their private keys
@@ -53,6 +53,8 @@ void generateBadModuliArray(mpz_t *badModuli, mpz_t *moduli, uint32_t *badModuli
             bitMask >>= 1;
         }
     }
+
+    return badModuliCount-1;
 }
 
 void generatePrivateKeyFromModulusAndPrime(mpz_t privateKey, mpz_t modulus, mpz_t prime) {
