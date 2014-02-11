@@ -1,6 +1,0 @@
-keys/2k-keys.txt, doesn't appear to be a proper file.
-Are you sure it's a file of moduli?
-
-real	0m0.005s
-user	0m0.000s
-sys	0m0.000s
