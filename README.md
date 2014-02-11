@@ -30,6 +30,6 @@ Before running either executable the GMP library must be linked. Typically this 
 
 ###Parallel (CUDA)
 *256:  1.642s
-*2048: 1m 30.2s
-*4096: 5m 58s
-*20K:  2hrs 22m (Might not have properly finished)
+*2048: 44s
+*4096: 2m 53s
+*20K:  2hrs 22m+? (Might not have properly finished)
