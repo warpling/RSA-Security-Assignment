@@ -1,4 +1,3 @@
-#include "bigInt.h"
 #include "cudaFunctions.h"
 
 /*__global__ void subTest(bigInt *key1, bigInt *key2, bigInt *result) {

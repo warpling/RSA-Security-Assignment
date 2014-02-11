@@ -1,4 +1,6 @@
+#include "bigInt.h"
 #include <stdint.h>
+
 #define BLOCKDIM_X 32
 #define BLOCKDIM_Y 1
 #define ISGREATER 2
@@ -6,10 +8,6 @@
 #define NOTSURE 1
 #define NOTIFY_IS_GREATER 4
 #define NOTIFY_NOT_GREATER 5
-
-/*typedef struct bigInt{
-    uint32_t *components;
-} bigInt;*/
 
 //__global__ void subTest(bigInt *key1, bigInt *key2, bigInt *result);
 __global__ void gcdKernel(int base, int offset, bigInt *keys, int numKeys, uint32_t *results);

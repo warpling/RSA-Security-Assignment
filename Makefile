@@ -10,23 +10,25 @@ NVCCFLAGS = -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm
 GMP_LIB = -I/home/clupo/gmp/include -L/home/clupo/gmp/lib -lgmp
 CUMP_LIB = -L/home/clupo/cump -lcump
 
-all: $(PARTS)
+#all: $(PARTS)
+all:
+	nvcc -o rsaCuda -pg ~clupo/gmp/lib/libgmp.a -g $(GMP_LIB) $(LIBS) -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 main.cu bigInt.cu cudaFunctions.cu outputBuilder.cu 
+
 
 main: main.cu bigInt
 	$(NVCC) -o mm_cuda -O2 $(GMP_LIB) -g $(NVCCFLAGS)  main.cu bigInt.o
 
-bigInt: bigInt.c
-	$(CC) -c bigInt.c -o bigInt.o
+bigInt: bigInt.cu
+	$(NVCC) -c bigInt.cu $(GMP_LIB) $(LIBS) -g $(NVCCFLAGS) -o bigInt.o
 
 cudaFunctions: cudaFunctions.cu
-	$(NVCC) -o cudaFunctions.o -O2 -g $(NVCCFLAGS) cudaFunctions.cu
+	$(NVCC) -o cudaFunctions.o -O2 $(GMP_LIB) $(LIBS) -g $(NVCCFLAGS) -c cudaFunctions.cu
 
 serial: serialGCD.c
 	$(CC) serialGCD.c $(GMP_LIB) $(LIBS) -pg $(CUTTING_EDGE_TECHNOLOGY) -o serialGCD
 
-# How it know where bigInt.o is?
-outputTest: outputTesting.c bigInt
-	$(CC) outputTesting.c -g -o outputTesting
+outputTest: outputTesting.cu bigInt
+	$(NVCC) outputTesting.cu $(GMP_LIB) $(LIBS) -g -o outputTesting
 
 serialTest: serial
 	@echo "Testing 20,000 keys serially"

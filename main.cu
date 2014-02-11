@@ -1,4 +1,3 @@
-#include "bigInt.h"
 #include "cuda.h"
 #include "cuda_runtime_api.h"
 #include "cudaFunctions.h"
@@ -8,6 +7,7 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include "outputBuilder.h"
 
 #define MODULI_BUF_SIZE 2000
 #define MAX_LENGTH_OF_1024_BIT_NUM 311
@@ -79,7 +79,8 @@ void getFileStats(char *file, int *numKeys) {
 
 int main(int argc, char *argv[])
 {
-   bigInt *moduli;
+   bigInt *bigInt_moduli;
+   mpz_t *mpz_moduli;
    bigInt *cuModuli;
    dim3 dimGrid(NUM_BLOCKS);
    char* file;
@@ -108,7 +109,6 @@ int main(int argc, char *argv[])
     }
     getFileStats(file, &numKeys);
     munmap(file, len);
-    printf("numkeys: %d\n", numKeys);
     bigInt_moduli = (bigInt*) malloc(numKeys*sizeof(bigInt));
     mpz_moduli = (mpz_t*) malloc(numKeys*sizeof(mpz_t));
     bitVec = (uint32_t*) malloc(ceil(numKeys/32.0)*sizeof(uint32_t));
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    printf("%d moduli read in.\n", numModuli);
+    //printf("%d moduli read in.\n", numModuli);
 
     // send array to CUDA
     // -------------------------------------------------------------------------
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
     // calculate and print results
     // -------------------------------------------------------------------------
 
-    printOutput(mpz_moduli, bitVec, numkeys); 
+    printOutput(mpz_moduli, bitVec, numKeys); 
 
     return 0;
 }

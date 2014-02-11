@@ -33,7 +33,8 @@ int readBigIntsFromFile(const char *filename, bigInt *bigIntArray, mpz_t *mpzArr
             }
 
             // Assign both versions of numbers into their arrays
-            mpzArray[i] = mpzVersion;
+            mpz_init(mpzArray[i]);
+	    mpz_set(mpzArray[i], mpzVersion);
             bigIntArray[i++] = newBigInt;
         }
     }
@@ -54,7 +55,7 @@ void setBigIntFromString(bigInt *bigNum, mpz_t mpzNum, char *string) {
     // Read in base 10 string to mpz representation
     mpz_set_str(num, string, 10);
     // Save off mpz_t version
-    mpzNum = num;
+    mpz_set(mpzNum, num);
 
     // Create output string in base 2
     // TODO: find out why binaryString isn't getting set through the param
