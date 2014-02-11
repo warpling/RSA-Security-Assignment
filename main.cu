@@ -147,5 +147,10 @@ int main(int argc, char *argv[])
 
     printOutput(badModuli, badModuliCount); 
 
+    cudaFree(cuModuli);
+    cudaFree(cuBitVec);
+    free(bitVec);
+    free(bigInt_moduli);
+
     return 0;
 }
