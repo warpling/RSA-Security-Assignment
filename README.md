@@ -1,29 +1,35 @@
 #RSA Jazz
 
-##Prerequisites
-You must alread have [GMP](https://gmplib.org/manual/) installed to compile.
-The easiest way to install GMP is to use the bundle manager [brew](http://brew.sh/) and run `brew install gmp`.
-Make sure it installs without errors and if there are errors make sure you don't ignore them and tear our your hair for an hour.
+##Notes
+We were repeatedly kicked off the lab machines in 255 by people restarting computers, arbitrary midnight reboots, and other factors left to the gods. Our detached parallel process cracking 20K keys might not have finished, of that we're not sure, but we are sure it put up a valient effort and returned 10 bad keys before peetering out into the /dev/null ether for a final time.
 
-##Basic instructions
-To compile each part simply run a cmd like...
-`make part3`
+##How to compile
+To compile the serial and parallel executables please run...
+`make serial`
+`make parallel`
 
 Some make targets will also run the compiled executable... so be prepared for that...
 
+##How to run
 
-##Part 1
-Generates 10 probabalistic primes
-`make part1`
+Before running either executable the GMP library must be linked. Typically this happens during the compile phase, but if it doesn't, run `LD_LIBRARY_PATH=/home/clupo/gmp/lib` explicitly.
 
-##Part 2
-`make part2`
+###Serial
+`./serialGCD <keyFile>`
 
-##Part 3
-n2 and n5 share a gcd of 7958371467617366824605775912960638834791855716610959117124052267528546374374593198071120059398734032490380767332883052662861580136473938906942059406675053
+###Parallel (CUDA)
+`./rsaCuda <keyFile>`
 
-##Part 4
-Currently broken
+##Times
 
-##Part 5
-5095479332755365954153828355981909508896567060293392216005763898643344868910198621506988372856954285983071121043956237226856264977498423310107913100870447
+###Serial
+*256:  .574s
+*2048: 36.630s
+*4096: 2m 26.749s
+*20K:  60m 50.192s
+
+###Parallel (CUDA)
+*256:  1.642s
+*2048: 1m 30.2s
+*4096: 5m 58s
+*20K:  2hrs 22m (Might not have properly finished)
