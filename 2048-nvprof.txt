@@ -1,0 +1,10 @@
+==6881== NVPROF is profiling process 6881, command: rsaCuda keys/2048-keys.txt
+==6881== Profiling application: rsaCuda keys/2048-keys.txt
+==6881== Warning: Found 2 invalid records in the result.
+==6881== Warning: This could be because device ran out of memory when profiling.
+==6881== Profiling result:
+Time(%)      Time     Calls       Avg       Min       Max  Name
+100.00%  86.5471s     11514  7.5167ms  2.6360ms  8.2835ms  gcdKernel(int, int, bigInt*, int, unsigned int*)
+  0.00%  45.631us         1  45.631us  45.631us  45.631us  [CUDA memcpy HtoD]
+  0.00%  4.4480us         1  4.4480us  4.4480us  4.4480us  [CUDA memset]
+  0.00%  2.4000us         1  2.4000us  2.4000us  2.4000us  [CUDA memcpy DtoH]

@@ -1,0 +1,10 @@
+nohup: ignoring input and appending output to `nohup.out'
+==7213== NVPROF is profiling process 7213, command: rsaCuda keys/20K-keys.txt
+==7213== Profiling application: rsaCuda keys/20K-keys.txt
+==7213== Warning: Found 32 invalid records in the result.
+==7213== Warning: This could be because device ran out of memory when profiling.
+==7213== Profiling result:
+Time(%)      Time     Calls       Avg       Min       Max  Name
+100.00%    1e+03s    133887  8.1187ms  2.5661ms  8.2950ms  gcdKernel(int, int, bigInt*, int, unsigned int*)
+  0.00%  573.24us         1  573.24us  573.24us  573.24us  [CUDA memcpy HtoD]
+  0.00%  4.5120us         1  4.5120us  4.5120us  4.5120us  [CUDA memset]

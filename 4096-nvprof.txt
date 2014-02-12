@@ -1,0 +1,10 @@
+==6988== NVPROF is profiling process 6988, command: rsaCuda keys/4096-keys.txt
+==6988== Profiling application: rsaCuda keys/4096-keys.txt
+==6988== Warning: Found 10 invalid records in the result.
+==6988== Warning: This could be because device ran out of memory when profiling.
+==6988== Profiling result:
+Time(%)      Time     Calls       Avg       Min       Max  Name
+100.00%  343.972s     43981  7.8209ms  2.5944ms  8.2892ms  gcdKernel(int, int, bigInt*, int, unsigned int*)
+  0.00%  88.446us         1  88.446us  88.446us  88.446us  [CUDA memcpy HtoD]
+  0.00%  4.4160us         1  4.4160us  4.4160us  4.4160us  [CUDA memset]
+  0.00%  2.8160us         1  2.8160us  2.8160us  2.8160us  [CUDA memcpy DtoH]

@@ -1,0 +1,8 @@
+==6663== NVPROF is profiling process 6663, command: rsaCuda keys/256-keys.txt
+==6663== Profiling application: rsaCuda keys/256-keys.txt
+==6663== Profiling result:
+Time(%)      Time     Calls       Avg       Min       Max  Name
+100.00%  1.52913s       312  4.9010ms  1.8819ms  8.2328ms  gcdKernel(int, int, bigInt*, int, unsigned int*)
+  0.00%  8.6720us         1  8.6720us  8.6720us  8.6720us  [CUDA memcpy HtoD]
+  0.00%  4.4160us         1  4.4160us  4.4160us  4.4160us  [CUDA memset]
+  0.00%  2.1440us         1  2.1440us  2.1440us  2.1440us  [CUDA memcpy DtoH]
